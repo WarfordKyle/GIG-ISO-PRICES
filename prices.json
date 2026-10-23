@@ -1,5 +1,5 @@
 {
- "generated_utc": "2026-10-23T15:48:24Z",
+ "generated_utc": "2026-10-23T15:51:49Z",
  "units": "$/MWh",
  "isos": {
   "NYISO": {
@@ -26,11 +26,11 @@
   },
   "CAISO": {
    "status": "ok",
-   "as_of": "2026-10-23T15:50:00-00:00 UTC",
+   "as_of": "2026-10-23T15:55:00-00:00 UTC",
    "prices": {
-    "TH_SP15": 27.64975,
-    "TH_NP15": 40.14508,
-    "TH_ZP26": 39.5797
+    "TH_SP15": 26.77492,
+    "TH_NP15": 35.75848,
+    "TH_ZP26": 36.71973
    },
    "note": ""
   },
@@ -54,20 +54,20 @@
   },
   "ISO-NE": {
    "status": "unavailable",
-   "reason": "StopIteration: "
+   "reason": "ValueError: ISO-NE: no price column; header=Label|Time|$/MWh|$/MWh|$/MWh|$/MWh"
   },
   "MISO": {
    "status": "ok",
-   "as_of": "23-Oct-2026 - Interval 10:45 EST",
+   "as_of": "23-Oct-2026 - Interval 10:50 EST",
    "prices": {
-    "ILLINOIS.HUB": 18.99,
-    "INDIANA.HUB": 19.85,
-    "LOUISIANA.HUB": 22.41,
-    "MICHIGAN.HUB": 22.85,
-    "MINN.HUB": 11.08,
-    "MS.HUB": 21.94,
-    "TEXAS.HUB": 23.52,
-    "ARKANSAS.HUB": 22.44
+    "LOUISIANA.HUB": 23.11,
+    "MICHIGAN.HUB": 23.69,
+    "MINN.HUB": 11.31,
+    "MS.HUB": 22.59,
+    "TEXAS.HUB": 24.17,
+    "ARKANSAS.HUB": 23.09,
+    "ILLINOIS.HUB": 19.54,
+    "INDIANA.HUB": 20.44
    },
    "note": "5-minute real-time LMP at MISO hubs; time is MISO market time (EST)"
   },
