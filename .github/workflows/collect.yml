@@ -1,15 +1,18 @@
 name: collect-iso-prices
 on:
-  schedule: [{cron: "*/10 * * * *"}]   # every 10 minutes
+  schedule:
+    - cron: "7,22,37,52 * * * *"
   workflow_dispatch:
-permissions: {contents: write}
+permissions:
+  contents: write
 jobs:
   run:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
-        with: {python-version: "3.12"}
+        with:
+          python-version: "3.12"
       - run: pip install requests
       - run: python collect_prices.py
         env:
@@ -18,6 +21,8 @@ jobs:
           ISONE_USER: ${{ secrets.ISONE_USER }}
           ISONE_PASS: ${{ secrets.ISONE_PASS }}
       - run: |
-          git config user.name "gig-collector"; git config user.email "noreply@gigenergycorp.com"
-          git add prices.json; git commit -m "update prices" || exit 0; git push
-
+          git config user.name "gig-collector"
+          git config user.email "noreply@gigenergycorp.com"
+          git add prices.json
+          git commit -m "update prices" || exit 0
+          git push
