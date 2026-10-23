@@ -73,9 +73,16 @@ def isone():
     ok("ISO-NE", d["BeginDate"], {"Hub": float(d["LmpTotal"])})
 
 def miso():
-    key = os.environ["MISO_KEY"]
-    r = requests.get("https://apim.misoenergy.org/pricing/v1/real-time/latest/lmp", headers={**UA, "Ocp-Apim-Subscription-Key": key}, timeout=T); r.raise_for_status()
-    raise NotImplementedError("Map MISO response fields after registering and viewing the live schema")
+    # Public MISO market pricing API (no key): latest 5-minute real-time LMP by pricing node.
+    r = requests.get("https://public-api.misoenergy.org/api/MarketPricing/GetLmpConsolidatedTable", headers=UA, timeout=T)
+    r.raise_for_status()
+    d = r.json()["LMPData"]
+    nodes = d["FiveMinLMP"]["PricingNode"]
+    if isinstance(nodes, dict): nodes = [nodes]
+    hubs = {n["name"]: float(n["LMP"]) for n in nodes if str(n.get("name", "")).upper().endswith(".HUB")}
+    if not hubs: raise ValueError("MISO: no hub nodes found")
+    ok("MISO", str(d.get("RefId", "")).strip(), hubs, "5-minute real-time LMP at MISO hubs; time is MISO market time (EST)")
+
 
 def spp():
     # Public SPP Marketplace file browser: latest 5-minute real-time LMP by settlement location. No key needed.
@@ -95,7 +102,7 @@ def spp():
 
 for name, fn, needs in [("NYISO", nyiso, []), ("CAISO", caiso, []), ("ERCOT", ercot, []),
                         ("PJM", pjm, ["PJM_KEY"]), ("ISO-NE", isone, ["ISONE_USER", "ISONE_PASS"]),
-                        ("MISO", miso, ["MISO_KEY"]), ("SPP", spp, [])]:
+                        ("MISO", miso, []), ("SPP", spp, [])]:
     miss = [k for k in needs if not os.environ.get(k)]
     if miss: fail(name, "missing credentials: " + ", ".join(miss)); continue
     try: fn()
@@ -103,4 +110,3 @@ for name, fn, needs in [("NYISO", nyiso, []), ("CAISO", caiso, []), ("ERCOT", er
 
 json.dump(out, open("prices.json", "w"), indent=1)
 print(json.dumps({k: v["status"] for k, v in out["isos"].items()}))
-
