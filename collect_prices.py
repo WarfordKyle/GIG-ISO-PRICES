@@ -86,9 +86,11 @@ def isone():
     if not data: raise ValueError("ISO-NE: no data rows in CSV")
     # Layout seen live: Label | Time | $/MWh | $/MWh | $/MWh | $/MWh  (LMP, Energy, Congestion, Loss, in that order)
     if len(head) < 3 or head[0].strip().lower() != "label": raise ValueError("ISO-NE: layout changed; header=" + "|".join(head))
-    want = [d for d in data if len(d) >= 3 and ("INTERNAL_HUB" in d[0].upper() or d[0].strip().startswith((".Z.", ".H.")))]
-    if not want: raise ValueError("ISO-NE: no hub/zone rows; labels=" + ",".join(d[0] for d in data[:12]))
-    prices = {d[0].strip(): float(d[2]) for d in want}
+    names = {"4000": "INTERNAL_HUB", "4001": "MAINE", "4002": "NEW_HAMPSHIRE", "4003": "VERMONT", "4004": "CONNECTICUT",
+             "4005": "RHODE_ISLAND", "4006": "SEMASS", "4007": "WCMASS", "4008": "NEMASSBOST"}
+    want = [d for d in data if len(d) >= 3 and d[0].strip().strip("\"") in names]
+    if not want: raise ValueError("ISO-NE: hub/zone IDs 4000-4008 not found; labels=" + ",".join(d[0] for d in data[:12]))
+    prices = {names[d[0].strip().strip("\"")]: float(d[2]) for d in want}
     ok("ISO-NE", want[0][1].strip() + " ET", prices, "5-minute real-time LMP: Internal Hub and load zones")
 
 
@@ -106,9 +108,14 @@ def miso():
 
 def spp():
     # Public SPP Marketplace file browser: latest 5-minute real-time LMP by settlement location. No key needed.
-    r = requests.get("https://portal.spp.org/file-browser-api/download/rtbm-lmp-by-location",
-                     params={"path": "/RTBM-LMP-SL-latestInterval.csv"}, headers=UA, timeout=T)
-    r.raise_for_status()
+    for attempt in range(3):
+        try:
+            r = requests.get("https://portal.spp.org/file-browser-api/download/rtbm-lmp-by-location",
+                             params={"path": "/RTBM-LMP-SL-latestInterval.csv"}, headers=UA, timeout=45)
+            r.raise_for_status(); break
+        except requests.RequestException:
+            if attempt == 2: raise
+            time.sleep(8)
     rows = list(csv.DictReader(io.StringIO(r.text)))
     if not rows or "LMP" not in rows[0]: raise ValueError("SPP file layout changed")
     by = {x["Settlement Location"].strip(): x for x in rows}
