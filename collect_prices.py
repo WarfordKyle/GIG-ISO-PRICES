@@ -78,7 +78,20 @@ def miso():
     raise NotImplementedError("Map MISO response fields after registering and viewing the live schema")
 
 def spp():
-    raise NotImplementedError("SPP: add the Marketplace file-browser API call after account setup")
+    # Public SPP Marketplace file browser: latest 5-minute real-time LMP by settlement location. No key needed.
+    r = requests.get("https://portal.spp.org/file-browser-api/download/rtbm-lmp-by-location",
+                     params={"path": "/RTBM-LMP-SL-latestInterval.csv"}, headers=UA, timeout=T)
+    r.raise_for_status()
+    rows = list(csv.DictReader(io.StringIO(r.text)))
+    if not rows or "LMP" not in rows[0]: raise ValueError("SPP file layout changed")
+    by = {x["Settlement Location"].strip(): x for x in rows}
+    # Prefer SPP's named north/south hubs if present; otherwise a fixed shortlist of major hubs.
+    pref = [n for n in by if "SPP" in n.upper() and any(k in n.upper() for k in ("NORTH", "SOUTH", "HUB"))]
+    pick = pref or [n for n in ("CSWS_HUB", "KCPLHUB", "ETEC_HUB", "GRDA_HUB", "GSEC_HUB", "EDEP_SWMPEPHUB") if n in by]
+    if not pick: raise ValueError("SPP: no hub locations found in file")
+    prices = {n: float(by[n]["LMP"]) for n in pick}
+    first = rows[0]
+    ok("SPP", first["GMTIntervalEnd"] + " UTC (interval ending)", prices, "5-minute real-time LMP by settlement location")
 
 for name, fn, needs in [("NYISO", nyiso, []), ("CAISO", caiso, []), ("ERCOT", ercot, []),
                         ("PJM", pjm, ["PJM_KEY"]), ("ISO-NE", isone, ["ISONE_USER", "ISONE_PASS"]),
