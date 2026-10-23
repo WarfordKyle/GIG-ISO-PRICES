@@ -1,0 +1,52 @@
+{
+ "generated_utc": "2026-10-23T14:30:51Z",
+ "units": "$/MWh",
+ "isos": {
+  "NYISO": {
+   "status": "ok",
+   "as_of": "10/23/2026 10:30:00 ET",
+   "prices": {
+    "WEST": 26.7,
+    "GENESE": 25.65,
+    "CENTRL": 25.5,
+    "NORTH": 24.99,
+    "MHK VL": 25.94,
+    "CAPITL": 26.27,
+    "HUD VL": 26.96,
+    "MILLWD": 27.06,
+    "DUNWOD": 27.21,
+    "N.Y.C.": 45.21,
+    "LONGIL": 28.17,
+    "H Q": 25.55,
+    "NPX": 26.34,
+    "O H": 26.06,
+    "PJM": 27.69
+   },
+   "note": ""
+  },
+  "CAISO": {
+   "status": "unavailable",
+   "reason": "HTTPError: 429 Client Error: Too Many Requests for url: https://oasis.caiso.com/oasisapi/SingleZip?queryname=PRC_INTVL_LMP&version=1&market_run_id=RTM&startdatetime=20261023T13:30-0000&enddatetime=202"
+  },
+  "ERCOT": {
+   "status": "unavailable",
+   "reason": "IndexError: list index out of range"
+  },
+  "PJM": {
+   "status": "unavailable",
+   "reason": "missing credentials: PJM_KEY"
+  },
+  "ISO-NE": {
+   "status": "unavailable",
+   "reason": "missing credentials: ISONE_USER, ISONE_PASS"
+  },
+  "MISO": {
+   "status": "unavailable",
+   "reason": "missing credentials: MISO_KEY"
+  },
+  "SPP": {
+   "status": "unavailable",
+   "reason": "NotImplementedError: SPP: add the Marketplace file-browser API call after account setup"
+  }
+ }
+}
