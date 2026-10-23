@@ -84,10 +84,13 @@ def isone():
         if row[0] == "H": head = row[1:]
         elif row[0] == "D" and head: data.append(dict(zip(head, row[1:])))
     if not data: raise ValueError("ISO-NE: no data rows in CSV")
-    price_col = next(c for c in head if c.lower().startswith("locational marginal price") or c == "LMP")
-    time_col = next((c for c in head if "time" in c.lower()), None)
-    want = [x for x in data if x.get("Location Name", "").strip() == ".H.INTERNAL_HUB" or x.get("Location Type", "").strip().upper() == "LOAD ZONE"]
-    if not want: raise ValueError("ISO-NE: hub/zone rows not found")
+    cl = lambda c: c.strip().lower()
+    price_col = next((c for c in head if cl(c) in ("lmp", "locational marginal price", "lmp total", "total lmp")), None) \
+        or next((c for c in head if ("lmp" in cl(c) or "marginal price" in cl(c)) and not any(k in cl(c) for k in ("energy", "congestion", "loss"))), None)
+    if not price_col: raise ValueError("ISO-NE: no price column; header=" + "|".join(head))
+    time_col = next((c for c in head if "time" in cl(c)), None)
+    want = [x for x in data if "INTERNAL_HUB" in x.get("Location Name", "").upper() or x.get("Location Type", "").strip().upper() == "LOAD ZONE"]
+    if not want: raise ValueError("ISO-NE: hub/zone rows not found; header=" + "|".join(head) + " sample=" + str(data[0])[:120])
     prices = {x["Location Name"].strip(): float(x[price_col]) for x in want}
     ts = (want[0].get(time_col, "") if time_col else "") + " ET"
     ok("ISO-NE", ts.strip(), prices, "5-minute real-time LMP: Internal Hub and load zones")
