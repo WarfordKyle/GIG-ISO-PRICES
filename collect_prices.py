@@ -74,7 +74,7 @@ def isone():
     txt = ""
     for attempt in range(3):
         r = sess.get("https://www.iso-ne.com/transform/csv/fiveminlmp/current?type=prelim", timeout=T)
-        if r.status_code == 200 and "csv" in r.headers.get("Content-Type", "").lower() or (r.status_code == 200 and r.text.startswith(("C,", '"C"'))):
+        if r.status_code == 200 and ("csv" in r.headers.get("Content-Type", "").lower() or r.text.startswith(("C,", '"C"'))):
             txt = r.text; break
         time.sleep(3)
     if not txt: raise ValueError(f"ISO-NE: CSV not returned (last HTTP {r.status_code})")
@@ -82,18 +82,14 @@ def isone():
     for row in csv.reader(io.StringIO(txt)):
         if not row: continue
         if row[0] == "H": head = row[1:]
-        elif row[0] == "D" and head: data.append(dict(zip(head, row[1:])))
+        elif row[0] == "D" and head: data.append(row[1:])
     if not data: raise ValueError("ISO-NE: no data rows in CSV")
-    cl = lambda c: c.strip().lower()
-    price_col = next((c for c in head if cl(c) in ("lmp", "locational marginal price", "lmp total", "total lmp")), None) \
-        or next((c for c in head if ("lmp" in cl(c) or "marginal price" in cl(c)) and not any(k in cl(c) for k in ("energy", "congestion", "loss"))), None)
-    if not price_col: raise ValueError("ISO-NE: no price column; header=" + "|".join(head))
-    time_col = next((c for c in head if "time" in cl(c)), None)
-    want = [x for x in data if "INTERNAL_HUB" in x.get("Location Name", "").upper() or x.get("Location Type", "").strip().upper() == "LOAD ZONE"]
-    if not want: raise ValueError("ISO-NE: hub/zone rows not found; header=" + "|".join(head) + " sample=" + str(data[0])[:120])
-    prices = {x["Location Name"].strip(): float(x[price_col]) for x in want}
-    ts = (want[0].get(time_col, "") if time_col else "") + " ET"
-    ok("ISO-NE", ts.strip(), prices, "5-minute real-time LMP: Internal Hub and load zones")
+    # Layout seen live: Label | Time | $/MWh | $/MWh | $/MWh | $/MWh  (LMP, Energy, Congestion, Loss, in that order)
+    if len(head) < 3 or head[0].strip().lower() != "label": raise ValueError("ISO-NE: layout changed; header=" + "|".join(head))
+    want = [d for d in data if len(d) >= 3 and ("INTERNAL_HUB" in d[0].upper() or d[0].strip().startswith((".Z.", ".H.")))]
+    if not want: raise ValueError("ISO-NE: no hub/zone rows; labels=" + ",".join(d[0] for d in data[:12]))
+    prices = {d[0].strip(): float(d[2]) for d in want}
+    ok("ISO-NE", want[0][1].strip() + " ET", prices, "5-minute real-time LMP: Internal Hub and load zones")
 
 
 def miso():
