@@ -1,26 +1,26 @@
 {
- "generated_utc": "2026-10-23T15:51:49Z",
+ "generated_utc": "2026-10-23T15:54:48Z",
  "units": "$/MWh",
  "isos": {
   "NYISO": {
    "status": "ok",
-   "as_of": "10/23/2026 11:50:00 ET",
+   "as_of": "10/23/2026 11:55:00 ET",
    "prices": {
-    "H Q": 24.53,
-    "NPX": 25.25,
-    "O H": 24.98,
-    "PJM": 25.79,
-    "WEST": 25.52,
-    "GENESE": 24.58,
-    "CENTRL": 24.53,
+    "H Q": 24.58,
+    "NPX": 25.32,
+    "O H": 25.0,
+    "PJM": 27.22,
+    "WEST": 25.54,
+    "GENESE": 24.61,
+    "CENTRL": 24.58,
     "NORTH": 24.09,
-    "MHK VL": 24.83,
-    "CAPITL": 25.2,
-    "HUD VL": 25.79,
-    "MILLWD": 25.86,
-    "DUNWOD": 26.03,
-    "N.Y.C.": 32.5,
-    "LONGIL": 26.21
+    "MHK VL": 24.88,
+    "CAPITL": 25.25,
+    "HUD VL": 25.86,
+    "MILLWD": 25.96,
+    "DUNWOD": 26.11,
+    "N.Y.C.": 51.31,
+    "LONGIL": 27.39
    },
    "note": ""
   },
@@ -54,7 +54,7 @@
   },
   "ISO-NE": {
    "status": "unavailable",
-   "reason": "ValueError: ISO-NE: no price column; header=Label|Time|$/MWh|$/MWh|$/MWh|$/MWh"
+   "reason": "ValueError: ISO-NE: no hub/zone rows; labels=321,322,323,326,327,328,329,330,331,335,336,345"
   },
   "MISO": {
    "status": "ok",
@@ -72,13 +72,8 @@
    "note": "5-minute real-time LMP at MISO hubs; time is MISO market time (EST)"
   },
   "SPP": {
-   "status": "ok",
-   "as_of": "10/23/2026 15:50:00 UTC (interval ending)",
-   "prices": {
-    "SPPNORTH_HUB": 16.9485,
-    "SPPSOUTH_HUB": 16.4645
-   },
-   "note": "5-minute real-time LMP by settlement location"
+   "status": "unavailable",
+   "reason": "ConnectTimeout: HTTPSConnectionPool(host='portal.spp.org', port=443): Max retries exceeded with url: /file-browser-api/download/rtbm-lmp-by-location?path=%2FRTBM-LMP-SL-latestInterval.csv (Caused by C"
   }
  }
 }
