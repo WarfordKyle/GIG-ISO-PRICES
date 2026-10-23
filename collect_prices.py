@@ -67,10 +67,31 @@ def pjm():
     ok("PJM", it["datetime_beginning_ept"] + " ET", {it["pnode_name"]: float(it["total_lmp_rt"])}, "pnode_id 1 is a placeholder; set the PJM hub/RTO node IDs you want")
 
 def isone():
-    u, p = os.environ["ISONE_USER"], os.environ["ISONE_PASS"]
-    r = requests.get("https://webservices.iso-ne.com/api/v1.1/fiveminutelmp/current/location/4000.json", auth=(u, p), headers=UA, timeout=T); r.raise_for_status()
-    d = r.json()["FiveMinLmps"]["FiveMinLmp"]; d = d[0] if isinstance(d, list) else d
-    ok("ISO-NE", d["BeginDate"], {"Hub": float(d["LmpTotal"])})
+    # Public ISO-NE five-minute real-time LMP CSV. Needs a browser-style session cookie from a reports page first; no account.
+    sess = requests.Session()
+    sess.headers.update({**UA, "Accept": "text/csv,*/*"})
+    sess.get("https://www.iso-ne.com/isoexpress/web/reports/pricing/-/tree/lmp-by-node", timeout=T)
+    txt = ""
+    for attempt in range(3):
+        r = sess.get("https://www.iso-ne.com/transform/csv/fiveminlmp/current?type=prelim", timeout=T)
+        if r.status_code == 200 and "csv" in r.headers.get("Content-Type", "").lower() or (r.status_code == 200 and r.text.startswith(("C,", '"C"'))):
+            txt = r.text; break
+        time.sleep(3)
+    if not txt: raise ValueError(f"ISO-NE: CSV not returned (last HTTP {r.status_code})")
+    head, data = None, []
+    for row in csv.reader(io.StringIO(txt)):
+        if not row: continue
+        if row[0] == "H": head = row[1:]
+        elif row[0] == "D" and head: data.append(dict(zip(head, row[1:])))
+    if not data: raise ValueError("ISO-NE: no data rows in CSV")
+    price_col = next(c for c in head if c.lower().startswith("locational marginal price") or c == "LMP")
+    time_col = next((c for c in head if "time" in c.lower()), None)
+    want = [x for x in data if x.get("Location Name", "").strip() == ".H.INTERNAL_HUB" or x.get("Location Type", "").strip().upper() == "LOAD ZONE"]
+    if not want: raise ValueError("ISO-NE: hub/zone rows not found")
+    prices = {x["Location Name"].strip(): float(x[price_col]) for x in want}
+    ts = (want[0].get(time_col, "") if time_col else "") + " ET"
+    ok("ISO-NE", ts.strip(), prices, "5-minute real-time LMP: Internal Hub and load zones")
+
 
 def miso():
     # Public MISO market pricing API (no key): latest 5-minute real-time LMP by pricing node.
@@ -101,7 +122,7 @@ def spp():
     ok("SPP", first["GMTIntervalEnd"] + " UTC (interval ending)", prices, "5-minute real-time LMP by settlement location")
 
 for name, fn, needs in [("NYISO", nyiso, []), ("CAISO", caiso, []), ("ERCOT", ercot, []),
-                        ("PJM", pjm, ["PJM_KEY"]), ("ISO-NE", isone, ["ISONE_USER", "ISONE_PASS"]),
+                        ("PJM", pjm, ["PJM_KEY"]), ("ISO-NE", isone, []),
                         ("MISO", miso, []), ("SPP", spp, [])]:
     miss = [k for k in needs if not os.environ.get(k)]
     if miss: fail(name, "missing credentials: " + ", ".join(miss)); continue
