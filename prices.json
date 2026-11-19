@@ -1,50 +1,50 @@
 {
- "generated_utc": "2026-11-19T08:55:52Z",
+ "generated_utc": "2026-11-19T18:12:16Z",
  "units": "$/MWh",
  "isos": {
   "NYISO": {
    "status": "ok",
-   "as_of": "11/19/2026 03:55:00 ET",
+   "as_of": "11/19/2026 13:15:00 ET",
    "prices": {
-    "H Q": 33.54,
-    "NPX": 35.07,
-    "O H": 30.3,
-    "PJM": 33.17,
-    "WEST": 30.87,
-    "GENESE": 31.44,
-    "CENTRL": 32.8,
-    "NORTH": 33.87,
-    "MHK VL": 34.07,
-    "CAPITL": 34.53,
-    "HUD VL": 34.97,
-    "MILLWD": 35.0,
-    "DUNWOD": 35.1,
-    "N.Y.C.": 35.17,
-    "LONGIL": 35.6
+    "H Q": 31.49,
+    "NPX": 33.28,
+    "O H": 27.73,
+    "PJM": 30.93,
+    "WEST": 28.26,
+    "GENESE": 28.83,
+    "CENTRL": 30.46,
+    "NORTH": 31.71,
+    "MHK VL": 31.87,
+    "CAPITL": 32.18,
+    "HUD VL": 33.19,
+    "MILLWD": 33.31,
+    "DUNWOD": 33.5,
+    "N.Y.C.": 33.69,
+    "LONGIL": 34.03
    },
    "note": ""
   },
   "CAISO": {
    "status": "ok",
-   "as_of": "2026-11-19T08:55:00-00:00 UTC",
+   "as_of": "2026-11-19T18:15:00-00:00 UTC",
    "prices": {
-    "TH_SP15": 44.81772,
-    "TH_NP15": 60.90273,
-    "TH_ZP26": 46.50471
+    "TH_SP15": 35.74042,
+    "TH_NP15": 74.79082,
+    "TH_ZP26": 38.12849
    },
    "note": ""
   },
   "ERCOT": {
    "status": "ok",
-   "as_of": "11/19/2026 02:45 CT (interval ending)",
+   "as_of": "11/19/2026 12:00 CT (interval ending)",
    "prices": {
-    "HB_BUSAVG": 28.86,
-    "HB_HOUSTON": 29.04,
-    "HB_HUBAVG": 30.09,
-    "HB_NORTH": 27.09,
-    "HB_PAN": 26.34,
-    "HB_SOUTH": 30.42,
-    "HB_WEST": 33.79
+    "HB_BUSAVG": 16.67,
+    "HB_HOUSTON": 19.56,
+    "HB_HUBAVG": 17.31,
+    "HB_NORTH": 15.46,
+    "HB_PAN": 15.68,
+    "HB_SOUTH": 18.28,
+    "HB_WEST": 15.92
    },
    "note": "includes reliability adders"
   },
@@ -54,41 +54,41 @@
   },
   "ISO-NE": {
    "status": "ok",
-   "as_of": "2026-11-19 03:55:00 ET",
+   "as_of": "2026-11-19 13:10:00 ET",
    "prices": {
-    "INTERNAL_HUB": 35.62,
-    "MAINE": 35.62,
-    "NEW_HAMPSHIRE": 35.62,
-    "VERMONT": 35.62,
-    "CONNECTICUT": 35.62,
-    "RHODE_ISLAND": 35.62,
-    "SEMASS": 35.62,
-    "WCMASS": 35.62,
-    "NEMASSBOST": 35.62
+    "INTERNAL_HUB": 35.46,
+    "MAINE": 35.46,
+    "NEW_HAMPSHIRE": 35.46,
+    "VERMONT": 35.46,
+    "CONNECTICUT": 35.46,
+    "RHODE_ISLAND": 35.46,
+    "SEMASS": 35.46,
+    "WCMASS": 35.46,
+    "NEMASSBOST": 35.46
    },
    "note": "5-minute real-time LMP: Internal Hub and load zones"
   },
   "MISO": {
    "status": "ok",
-   "as_of": "19-Nov-2026 - Interval 03:50 EST",
+   "as_of": "19-Nov-2026 - Interval 13:10 EST",
    "prices": {
-    "ILLINOIS.HUB": 21.91,
-    "INDIANA.HUB": 28.64,
-    "ARKANSAS.HUB": 18.74,
-    "LOUISIANA.HUB": 24.13,
-    "MICHIGAN.HUB": 26.72,
-    "MINN.HUB": 4.41,
-    "MS.HUB": 25.65,
-    "TEXAS.HUB": 21.26
+    "ARKANSAS.HUB": 17.24,
+    "ILLINOIS.HUB": 15.25,
+    "INDIANA.HUB": 23.66,
+    "LOUISIANA.HUB": 27.41,
+    "MICHIGAN.HUB": 23.29,
+    "MINN.HUB": 18.32,
+    "MS.HUB": 28.08,
+    "TEXAS.HUB": 16.26
    },
    "note": "5-minute real-time LMP at MISO hubs; time is MISO market time (EST)"
   },
   "SPP": {
    "status": "ok",
-   "as_of": "11/19/2026 08:55:00 UTC (interval ending)",
+   "as_of": "11/19/2026 18:15:00 UTC (interval ending)",
    "prices": {
-    "SPPNORTH_HUB": 20.3184,
-    "SPPSOUTH_HUB": 16.7491
+    "SPPNORTH_HUB": 20.4602,
+    "SPPSOUTH_HUB": 19.2483
    },
    "note": "5-minute real-time LMP by settlement location"
   }
